@@ -1,12 +1,5 @@
 package io.github.pepperkit.githooks;
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,6 +9,16 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
 
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
+/**
+ * The main Mojo, handles git hooks configuration on Initialize maven phase.
+ */
 @Mojo(name = "git-hooks", defaultPhase = LifecyclePhase.INITIALIZE)
 public class GitHooksMojo extends AbstractMojo {
 
@@ -48,12 +51,22 @@ public class GitHooksMojo extends AbstractMojo {
                     PosixFilePermission.OWNER_EXECUTE
             )));
 
+    /**
+     * Hooks configured by the user.
+     */
     @Parameter(defaultValue = "null")
     public Map<String, String> hooks;
 
+    /**
+     * If set to true, the hooks will always be overridden on initialization.
+     */
     @Parameter(defaultValue = "false")
     public boolean alwaysOverride;
 
+    /**
+     * Helper method, is used to set hooks to null if nothing is provided by the user.
+     * @param hooks hooks in string format, "null" value is only one expected
+     */
     public void setHooks(String hooks) {
         if (hooks.equals("null")) {
             this.hooks = null;
