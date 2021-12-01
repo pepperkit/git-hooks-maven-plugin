@@ -35,7 +35,6 @@ jobs:
     - name: Unit & Integration Tests
       run: mvn -B verify
     - name: Analyze with SonarCloud
-      run: mvn -B sonar:sonar
+      run: mvn -B sonar:sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
