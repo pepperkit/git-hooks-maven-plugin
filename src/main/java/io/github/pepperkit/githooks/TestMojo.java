@@ -1,11 +1,12 @@
 package io.github.pepperkit.githooks;
 
+import java.io.IOException;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import java.io.IOException;
 
 @Mojo(name = "test")
 public class TestMojo extends AbstractMojo {
