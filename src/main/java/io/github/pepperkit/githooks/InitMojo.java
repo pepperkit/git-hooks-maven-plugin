@@ -6,6 +6,7 @@
  */
 package io.github.pepperkit.githooks;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -51,6 +52,7 @@ public class InitMojo extends AbstractMojo {
         if (hooks == null) {
             getLog().info(
                     "No configuration is present. Skipping the execution of " + GitHooksManager.PLUGIN_NAME);
+            return;
         }
 
         // TODO: temporary
@@ -62,12 +64,18 @@ public class InitMojo extends AbstractMojo {
         gitHooksManager.checkProvidedHooksCorrectness(hooks);
         gitHooksManager.checkGitHooksDirAndCreateIfMissing();
 
-        // Check the hook file
-        // Create new or error
-        // Check the changes
-        // Add the content or do nothing
-        for (Map.Entry<String, String> hook : hooks.entrySet()) {
-            gitHooksManager.createHook(hook.getKey(), hook.getValue(), alwaysOverride);
+        String hookToBeCreated = null;
+        try {
+            // Check the changes
+            // Add the content or do nothing
+            for (Map.Entry<String, String> hook : hooks.entrySet()) {
+                hookToBeCreated = hook.getKey();
+                gitHooksManager.createHook(hookToBeCreated, hook.getValue(), alwaysOverride);
+            }
+
+        } catch (IOException e) {
+            throw new MojoExecutionException("Cannot write hook `" + hookToBeCreated + "`", e);
         }
     }
 }
+// TODO: delete the hooks if they were deleted from maven plugin
