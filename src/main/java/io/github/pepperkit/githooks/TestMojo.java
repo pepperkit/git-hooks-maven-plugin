@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2021 PepperKit
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license. See the LICENSE file for details.
+ */
 package io.github.pepperkit.githooks;
 
 import java.io.IOException;
@@ -6,7 +12,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-
 
 @Mojo(name = "test")
 public class TestMojo extends AbstractMojo {
@@ -20,7 +25,6 @@ public class TestMojo extends AbstractMojo {
     GitHooksManager gitHooksManager = new GitHooksManager(getLog());
 
     @Override
-    // todo: only mojos should throw MojoExecution Exceptions !!!
     public void execute() throws MojoExecutionException {
         String hookNameIsExecuted = null;
         try {
@@ -30,12 +34,17 @@ public class TestMojo extends AbstractMojo {
                     hookNameIsExecuted = hook;
                     gitHooksManager.executeHook(hook);
                 }
+            } else {
+                hookNameIsExecuted = hookName;
+                gitHooksManager.executeHook(hookName);
             }
-            hookNameIsExecuted = hookName;
-            gitHooksManager.executeHook(hookName);
 
-        } catch (InterruptedException | IOException e) {
+        } catch (IOException e) {
             throw new MojoExecutionException("Cannot execute hook `" + hookNameIsExecuted + "`", e);
+
+        } catch (InterruptedException e) {
+            getLog().error("Cannot execute hook `" + hookNameIsExecuted + "`");
+            Thread.currentThread().interrupt();
         }
     }
 }

@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2021 PepperKit
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license. See the LICENSE file for details.
+ */
 package io.github.pepperkit.githooks;
 
 import java.io.*;
@@ -8,7 +14,6 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
 import java.util.concurrent.Executors;
 
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 
@@ -62,7 +67,7 @@ public class GitHooksManager {
         }
     }
 
-    void checkGitHooksDirAndCreateIfMissing() throws MojoExecutionException {
+    void checkGitHooksDirAndCreateIfMissing() {
         if (!Files.exists(GIT_PATH)) {
             throw new IllegalStateException("It seems that it's not a git repository. " +
                     "Maven goal should be executed from the root of the project.");
@@ -72,12 +77,12 @@ public class GitHooksManager {
             try {
                 Files.createDirectories(GIT_HOOKS_PATH);
             } catch (IOException e) {
-                throw new MojoExecutionException("Cannot create absent directory " + GIT_HOOKS_PATH, e);
+                throw new IllegalStateException("Cannot create absent directory " + GIT_HOOKS_PATH, e);
             }
         }
     }
 
-    void createHook(String hookName, String hookValue, boolean alwaysOverride) throws MojoExecutionException {
+    void createHook(String hookName, String hookValue, boolean alwaysOverride) throws IOException {
         if (alwaysOverride) {
             String hookPath = getHookPath(hookName);
 
@@ -92,7 +97,7 @@ public class GitHooksManager {
                 }
 
             } catch (IOException e) {
-                throw new MojoExecutionException("Cannot write hook `" + hookName + "`", e);
+                throw e;
             }
         }
     }
