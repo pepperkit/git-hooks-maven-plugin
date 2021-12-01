@@ -2,7 +2,7 @@
 Maven plugin for easy git hooks configuration.
 
 ## Usage
-
+mvn io.github.pepperkit:git-hooks-maven-plugin:0.1.0-SNAPSHOT:test
 
 ## Project's structure
 ```
