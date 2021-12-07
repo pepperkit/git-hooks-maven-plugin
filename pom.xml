@@ -57,6 +57,7 @@
 
         <!-- Test Dependencies -->
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
+        <testcontainers.version>1.16.2</testcontainers.version>
 
         <!-- Plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -67,7 +68,9 @@
         </checkstyle.url>
         <jacoco-plugin.version>0.8.7</jacoco-plugin.version>
 
-        <itest-name-template>**/*IT.java</itest-name-template>
+        <!-- Excluded since is tested via system tests. -->
+        <sonar.exclusions>**GitHooksManager.java</sonar.exclusions>
+        <itest-name-template>**/*SysTest.java</itest-name-template>
     </properties>
 
     <dependencies>
@@ -108,6 +111,18 @@
             <version>3.21.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -126,19 +141,19 @@
 
                 <executions>
                     <execution>
-                        <id>integration-tests-source</id>
+                        <id>system-tests-source</id>
                         <phase>generate-test-sources</phase>
                         <goals>
                             <goal>add-test-source</goal>
                         </goals>
                         <configuration>
                             <sources>
-                                <source>src/integration-test/java</source>
+                                <source>src/system-test/java</source>
                             </sources>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>integration-tests-resources</id>
+                        <id>system-tests-resources</id>
                         <phase>generate-test-resources</phase>
                         <goals>
                             <goal>add-test-resource</goal>
@@ -146,7 +161,7 @@
                         <configuration>
                             <resources>
                                 <resource>
-                                    <directory>src/integration-test/resources</directory>
+                                    <directory>src/system-test/resources</directory>
                                 </resource>
                             </resources>
                         </configuration>
@@ -263,11 +278,11 @@
                 <version>0.1.0-SNAPSHOT</version>
                 <configuration>
                     <alwaysOverride>true</alwaysOverride>
-                    <hooks>
+<!--                    <hooks>
                         <pre-commit>
                             mvn -B checkstyle:checkstyle &amp;&amp; mvn -B test
                         </pre-commit>
-                    </hooks>
+                    </hooks>-->
                 </configuration>
             </plugin>
 

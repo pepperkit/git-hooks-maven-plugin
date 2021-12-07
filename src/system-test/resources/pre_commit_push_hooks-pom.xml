@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.pepperkit</groupId>
+    <artifactId>git-hooks-maven-plugin-system-test</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.github.pepperkit</groupId>
+                <artifactId>git-hooks-maven-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>hooks-init</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>init</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>hooks-validate</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>validate</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>hooks-test</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <alwaysOverride>true</alwaysOverride>
+                    <hooks>
+                        <pre-commit>echo "pre-commit hook is invoked"</pre-commit>
+                        <pre-push>
+                            echo "pre-push hook is invoked"
+                        </pre-push>
+                    </hooks>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
