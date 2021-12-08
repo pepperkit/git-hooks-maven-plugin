@@ -6,7 +6,9 @@
  */
 package io.github.pepperkit.githooks;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -37,7 +39,6 @@ public class InitMojo extends AbstractMojo {
 
     /**
      * Helper method, is used to set hooks to null if nothing is provided by the user.
-     *
      * @param hooks hooks in string format, "null" value is only one expected
      */
     public void setHooks(String hooks) {
@@ -50,8 +51,9 @@ public class InitMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         // Check the presence of configured hooks
         if (hooks == null) {
-            getLog().info(
-                    "No configuration is present. Skipping the execution of " + GitHooksManager.PLUGIN_NAME);
+            List<File> hookFiles = gitHooksManager.getExistingHookFiles();
+            gitHooksManager.backupExistingHooks(hookFiles);
+            hookFiles.forEach(File::delete);
             return;
         }
 
@@ -61,13 +63,14 @@ public class InitMojo extends AbstractMojo {
                     "Please, set this parameter to true");
         }
 
-        gitHooksManager.checkProvidedHooksCorrectness(hooks);
+        gitHooksManager.checkProvidedHookNamesCorrectness(hooks);
         gitHooksManager.checkGitHooksDirAndCreateIfMissing();
+
+        List<File> hookFiles = gitHooksManager.getExistingHookFiles();
+        gitHooksManager.backupExistingHooks(hookFiles);
 
         String hookToBeCreated = null;
         try {
-            // Check the changes
-            // Add the content or do nothing
             for (Map.Entry<String, String> hook : hooks.entrySet()) {
                 hookToBeCreated = hook.getKey();
                 gitHooksManager.createHook(hookToBeCreated, hook.getValue(), alwaysOverride);

@@ -28,7 +28,7 @@ class InitMojoTest {
     @Test
     void executesNothingIfHooksAreNotProvided() throws MojoExecutionException, IOException {
         initMojo.execute();
-        verify(gitHooksManagerMock, times(0)).checkProvidedHooksCorrectness(any());
+        verify(gitHooksManagerMock, times(0)).checkProvidedHookNamesCorrectness(any());
         verify(gitHooksManagerMock, times(0)).checkGitHooksDirAndCreateIfMissing();
         verify(gitHooksManagerMock, times(0)).createHook(any(), any(), anyBoolean());
     }
@@ -43,7 +43,7 @@ class InitMojoTest {
 
         initMojo.execute();
 
-        verify(gitHooksManagerMock, times(1)).checkProvidedHooksCorrectness(hooks);
+        verify(gitHooksManagerMock, times(1)).checkProvidedHookNamesCorrectness(hooks);
         verify(gitHooksManagerMock, times(1)).checkGitHooksDirAndCreateIfMissing();
         verify(gitHooksManagerMock, times(1))
                 .createHook("pre-commit", hooks.get("pre-commit"), true);
