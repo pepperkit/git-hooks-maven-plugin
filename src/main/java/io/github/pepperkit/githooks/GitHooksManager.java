@@ -11,9 +11,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
+import net.lingala.zip4j.ZipFile;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 
@@ -24,6 +27,8 @@ public class GitHooksManager {
     private static final Path GIT_PATH = Paths.get(".git");
 
     private static final Path GIT_HOOKS_PATH = Paths.get(".git/hooks");
+
+    static final String ARCHIVES_PATH_STR = GIT_HOOKS_PATH + "/archived";
 
     static final Set<String> GIT_HOOKS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             "applypatch-msg",
@@ -58,7 +63,7 @@ public class GitHooksManager {
         this.logger = logger;
     }
 
-    void checkProvidedHooksCorrectness(Map<String, String> hooks) {
+    void checkProvidedHookNamesCorrectness(Map<String, String> hooks) {
         for (Map.Entry<String, String> entry : hooks.entrySet()) {
             if (!GIT_HOOKS.contains(entry.getKey())) {
                 throw new IllegalStateException(
@@ -77,8 +82,37 @@ public class GitHooksManager {
             try {
                 Files.createDirectories(GIT_HOOKS_PATH);
             } catch (IOException e) {
-                throw new IllegalStateException("Cannot create absent directory " + GIT_HOOKS_PATH, e);
+                throw new IllegalStateException("Cannot create directory " + GIT_HOOKS_PATH, e);
             }
+        }
+    }
+
+    List<File> getExistingHookFiles() {
+        return GIT_HOOKS.stream()
+                .map(this::getHookPath)
+                .filter(h -> Files.exists(Paths.get(h)))
+                .map(File::new)
+                .collect(Collectors.toList());
+    }
+
+    void backupExistingHooks(List<File> hookFiles) {
+        try {
+            Files.createDirectories(Paths.get(ARCHIVES_PATH_STR));
+            zipFiles(hookFiles, ARCHIVES_PATH_STR + "/hooks_" + Instant.now() + ".zip");
+        } catch (IOException e) {
+            throw new IllegalStateException("Cannot create backup for existing hooks", e);
+        }
+    }
+
+    private void zipFiles(List<File> srcFiles, String outputFileName) throws IOException {
+        if (srcFiles.isEmpty()) {
+            logger.info("No hooks existed, nothing to backup");
+            return;
+        }
+
+        logger.info("Making backup of the existing hooks. They will available in directory" + ARCHIVES_PATH_STR);
+        try (ZipFile backup = new ZipFile(outputFileName)) {
+            backup.addFiles(srcFiles);
         }
     }
 
@@ -95,9 +129,6 @@ public class GitHooksManager {
                 if (!currentPermissions.containsAll(HOOK_FILE_PERMISSIONS)) {
                     Files.setPosixFilePermissions(hookFilePath, HOOK_FILE_PERMISSIONS);
                 }
-
-            } catch (IOException e) {
-                throw e;
             }
         }
     }
