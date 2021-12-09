@@ -20,7 +20,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 /**
  * The main Mojo, handles git hooks configuration on Initialize maven phase.
  */
-@Mojo(name = "init", defaultPhase = LifecyclePhase.INITIALIZE)
+@Mojo(name = "init", defaultPhase = LifecyclePhase.VALIDATE)
 public class InitMojo extends AbstractMojo {
 
     /**

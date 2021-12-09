@@ -96,7 +96,7 @@ public class GitHooksManager {
     }
 
     boolean isFirstLaunchOfPlugin() {
-        return Files.exists(Paths.get(ARCHIVES_PATH_STR));
+        return !Files.exists(Paths.get(ARCHIVES_PATH_STR));
     }
 
     void backupExistingHooks(List<File> hookFiles) {
@@ -114,7 +114,8 @@ public class GitHooksManager {
             return;
         }
 
-        logger.info("Making backup of the existing hooks. They will available in directory" + ARCHIVES_PATH_STR);
+        logger.info("Making backup of the existing hooks. "
+                + "They will be available in directory: " + ARCHIVES_PATH_STR);
         try (ZipFile backup = new ZipFile(outputFileName)) {
             backup.addFiles(srcFiles);
         }
