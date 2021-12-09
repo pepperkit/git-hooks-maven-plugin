@@ -29,12 +29,6 @@ public class InitMojo extends AbstractMojo {
     @Parameter(defaultValue = "null")
     public Map<String, String> hooks;
 
-    /**
-     * If set to true, the hooks will always be overridden on initialization.
-     */
-    @Parameter(defaultValue = "false")
-    public boolean alwaysOverride;
-
     GitHooksManager gitHooksManager = new GitHooksManager(getLog());
 
     /**
@@ -50,17 +44,17 @@ public class InitMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         // Check the presence of configured hooks
+        List<File> existingHookFiles = gitHooksManager.getExistingHookFiles();
         if (hooks == null) {
-            List<File> hookFiles = gitHooksManager.getExistingHookFiles();
-            gitHooksManager.backupExistingHooks(hookFiles);
-            hookFiles.forEach(File::delete);
+            gitHooksManager.backupExistingHooks(existingHookFiles);
+            existingHookFiles.forEach(File::delete);
             return;
         }
 
-        // TODO: temporary
-        if (!alwaysOverride) {
-            throw new IllegalStateException("`alwaysOverride = false` is not supported yet. " +
-                    "Please, set this parameter to true");
+        if (gitHooksManager.isFirstLaunchOfPlugin() && !existingHookFiles.isEmpty()) {
+            throw new MojoExecutionException("There are existing hooks detected, which were not created using this"
+                    + " plugin. Please, make sure that you transferred them to plugin's configuration and delete them"
+                    + " fist.");
         }
 
         gitHooksManager.checkProvidedHookNamesCorrectness(hooks);
@@ -73,7 +67,7 @@ public class InitMojo extends AbstractMojo {
         try {
             for (Map.Entry<String, String> hook : hooks.entrySet()) {
                 hookToBeCreated = hook.getKey();
-                gitHooksManager.createHook(hookToBeCreated, hook.getValue(), alwaysOverride);
+                gitHooksManager.createHook(hookToBeCreated, hook.getValue());
             }
 
         } catch (IOException e) {
@@ -81,4 +75,3 @@ public class InitMojo extends AbstractMojo {
         }
     }
 }
-// TODO: delete the hooks if they were deleted from maven plugin

@@ -30,7 +30,7 @@ class InitMojoTest {
         initMojo.execute();
         verify(gitHooksManagerMock, times(0)).checkProvidedHookNamesCorrectness(any());
         verify(gitHooksManagerMock, times(0)).checkGitHooksDirAndCreateIfMissing();
-        verify(gitHooksManagerMock, times(0)).createHook(any(), any(), anyBoolean());
+        verify(gitHooksManagerMock, times(0)).createHook(any(), any());
     }
 
     @Test
@@ -39,16 +39,15 @@ class InitMojoTest {
         hooks.put("pre-commit", "mvn -B checkstyle:checkstyle");
         hooks.put("pre-push", "mvn -B verify");
         initMojo.hooks = hooks;
-        initMojo.alwaysOverride = true;
 
         initMojo.execute();
 
         verify(gitHooksManagerMock, times(1)).checkProvidedHookNamesCorrectness(hooks);
         verify(gitHooksManagerMock, times(1)).checkGitHooksDirAndCreateIfMissing();
         verify(gitHooksManagerMock, times(1))
-                .createHook("pre-commit", hooks.get("pre-commit"), true);
+                .createHook("pre-commit", hooks.get("pre-commit"));
         verify(gitHooksManagerMock, times(1))
-                .createHook("pre-push", hooks.get("pre-push"), true);
+                .createHook("pre-push", hooks.get("pre-push"));
     }
 
     @Test
@@ -57,12 +56,11 @@ class InitMojoTest {
         hooks.put("pre-commit", "mvn -B checkstyle:checkstyle");
         hooks.put("pre-push", "mvn -B verify");
         initMojo.hooks = hooks;
-        initMojo.alwaysOverride = true;
 
         initMojo.execute();
 
         doThrow(new IOException()).when(gitHooksManagerMock)
-                .createHook("pre-push", hooks.get("pre-push"), true);
+                .createHook("pre-push", hooks.get("pre-push"));
 
         MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, initMojo::execute);
         assertThat(excThrown.getMessage()).contains("pre-push");
