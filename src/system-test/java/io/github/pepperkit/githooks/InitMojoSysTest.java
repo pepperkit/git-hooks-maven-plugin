@@ -11,7 +11,6 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.shouldHaveThrown;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InitMojoSysTest extends BaseMojoSysTest {

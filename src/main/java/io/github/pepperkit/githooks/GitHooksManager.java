@@ -28,7 +28,7 @@ public class GitHooksManager {
 
     private static final Path GIT_HOOKS_PATH = Paths.get(".git/hooks");
 
-    static final String ARCHIVES_PATH_STR = GIT_HOOKS_PATH + "/archived";
+    private static final String ARCHIVES_PATH_STR = GIT_HOOKS_PATH + "/archived";
 
     static final Set<String> GIT_HOOKS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             "applypatch-msg",
@@ -95,6 +95,10 @@ public class GitHooksManager {
                 .collect(Collectors.toList());
     }
 
+    boolean isFirstLaunchOfPlugin() {
+        return Files.exists(Paths.get(ARCHIVES_PATH_STR));
+    }
+
     void backupExistingHooks(List<File> hookFiles) {
         try {
             Files.createDirectories(Paths.get(ARCHIVES_PATH_STR));
@@ -116,19 +120,17 @@ public class GitHooksManager {
         }
     }
 
-    void createHook(String hookName, String hookValue, boolean alwaysOverride) throws IOException {
-        if (alwaysOverride) {
-            String hookPath = getHookPath(hookName);
+    void createHook(String hookName, String hookValue) throws IOException {
+        String hookPath = getHookPath(hookName);
 
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(hookPath))) {
-                logger.info("Writing hook `" + hookName + "`");
-                writer.write(hookValue.replaceAll("[ ]{2,}", ""));
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(hookPath))) {
+            logger.info("Writing hook `" + hookName + "`");
+            writer.write(hookValue.replaceAll("[ ]{2,}", ""));
 
-                Path hookFilePath = Paths.get(hookPath);
-                Set<PosixFilePermission> currentPermissions = Files.getPosixFilePermissions(hookFilePath);
-                if (!currentPermissions.containsAll(HOOK_FILE_PERMISSIONS)) {
-                    Files.setPosixFilePermissions(hookFilePath, HOOK_FILE_PERMISSIONS);
-                }
+            Path hookFilePath = Paths.get(hookPath);
+            Set<PosixFilePermission> currentPermissions = Files.getPosixFilePermissions(hookFilePath);
+            if (!currentPermissions.containsAll(HOOK_FILE_PERMISSIONS)) {
+                Files.setPosixFilePermissions(hookFilePath, HOOK_FILE_PERMISSIONS);
             }
         }
     }
