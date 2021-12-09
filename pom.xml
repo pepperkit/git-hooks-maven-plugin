@@ -288,7 +288,6 @@
                 <artifactId>git-hooks-maven-plugin</artifactId>
                 <version>0.1.0-SNAPSHOT</version>
                 <configuration>
-                    <alwaysOverride>true</alwaysOverride>
                     <hooks>
                         <pre-commit>mvn -B checkstyle:checkstyle</pre-commit>
                         <pre-push>mvn -B test</pre-push>
