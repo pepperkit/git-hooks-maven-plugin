@@ -43,7 +43,6 @@ public class InitMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        // Check the presence of configured hooks
         List<File> existingHookFiles = gitHooksManager.getExistingHookFiles();
         if (hooks == null) {
             gitHooksManager.backupExistingHooks(existingHookFiles);
