@@ -7,7 +7,7 @@ RUN apk add maven
 COPY pom.xml plugin/pom.xml
 COPY src/main plugin/src/main
 COPY README.md target* plugin/target/
-RUN cd plugin && mvn install -DskipTests=true
+RUN cd plugin && mvn install -DskipTests=true -Dgpg.skip
 
 # Copy test project
 COPY src/system-test/resources/* test-projects/
