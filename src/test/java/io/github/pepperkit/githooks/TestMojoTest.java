@@ -70,11 +70,10 @@ class TestMojoTest {
 
     @Test
     void testInterruptsIfHookExecIsInterrupted() throws InterruptedException, IOException, MojoExecutionException {
-        final String hookToTest = "pre-commit";
-        testMojo.hookName = hookToTest;
+        testMojo.hookName = "pre-commit";
 
         doThrow(new InterruptedException()).when(gitHooksManagerMock).executeHook(any());
 
-        testMojo.execute();
+        testMojo.execute(); // todo: check that
     }
 }

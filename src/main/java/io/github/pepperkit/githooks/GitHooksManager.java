@@ -20,6 +20,9 @@ import net.lingala.zip4j.ZipFile;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 
+/**
+ * Manages all the work with git hooks.
+ */
 public class GitHooksManager {
 
     static final String PLUGIN_NAME = "git-hooks-maven-plugin";
@@ -63,6 +66,11 @@ public class GitHooksManager {
         this.logger = logger;
     }
 
+    /**
+     * Checks that provided hook names are valid git hook names.
+     * @param hooks map of hookName -> hookValue
+     * @throws IllegalStateException if one of the hook names is not a valid git hook name
+     */
     void checkProvidedHookNamesCorrectness(Map<String, String> hooks) {
         for (Map.Entry<String, String> entry : hooks.entrySet()) {
             if (!GIT_HOOKS.contains(entry.getKey())) {
@@ -72,6 +80,11 @@ public class GitHooksManager {
         }
     }
 
+    /**
+     * Checks that git hooks directory exists, and creates it if it doesn't.
+     * @throws IllegalStateException if git repository was not initialized
+     *                               or there's an error on creating git hooks directory
+     */
     void checkGitHooksDirAndCreateIfMissing() {
         if (!Files.exists(GIT_PATH)) {
             throw new IllegalStateException("It seems that it's not a git repository. " +
@@ -87,6 +100,10 @@ public class GitHooksManager {
         }
     }
 
+    /**
+     * Returns the list of currently installed hooks.
+     * @return the list of existing hook files
+     */
     List<File> getExistingHookFiles() {
         return GIT_HOOKS.stream()
                 .map(this::getHookPath)
@@ -95,10 +112,19 @@ public class GitHooksManager {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Checks if the plugin is launched the first time (`archived` directory is already created).
+     * @return true if it's launched first time, false - otherwise
+     */
     boolean isFirstLaunchOfPlugin() {
         return !Files.exists(Paths.get(ARCHIVES_PATH_STR));
     }
 
+    /**
+     * Backups existing hook files into a zip file.
+     * @param hookFiles hook files to back up
+     * @throws IllegalStateException if an error occurs on writing the backup file
+     */
     void backupExistingHooks(List<File> hookFiles) {
         try {
             Files.createDirectories(Paths.get(ARCHIVES_PATH_STR));
@@ -121,6 +147,12 @@ public class GitHooksManager {
         }
     }
 
+    /**
+     * Writes hook file with the specified name and value.
+     * @param hookName hook's name
+     * @param hookValue hook file's content to write
+     * @throws IOException if an error occurs on trying to write the file
+     */
     void createHook(String hookName, String hookValue) throws IOException {
         String hookPath = getHookPath(hookName);
 
@@ -140,6 +172,12 @@ public class GitHooksManager {
         return GIT_HOOKS_PATH + "/" + hookName;
     }
 
+    /**
+     * Prints the contents of hook's file.
+     * @param hookName hook's name
+     * @return true if hook existed, false - otherwise
+     * @throws IOException if file cannot be read
+     */
     boolean printHook(String hookName) throws IOException {
         Optional<String> hookValue = readHook(hookName);
         hookValue.ifPresent(h -> logger.info(
@@ -155,6 +193,12 @@ public class GitHooksManager {
         return Optional.of(new String(Files.readAllBytes(hookFilePath)));
     }
 
+    /**
+     * Executes the hook's file.
+     * @param hookName hook's name
+     * @return true if hook existed, false - otherwise
+     * @throws IOException if file cannot be read or executed
+     */
     boolean executeHook(String hookName) throws InterruptedException, IOException {
         Optional<String> hook = readHook(hookName);
         if (hook.isPresent()) {
