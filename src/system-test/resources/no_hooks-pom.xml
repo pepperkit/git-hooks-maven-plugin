@@ -31,16 +31,6 @@
             <plugin>
                 <groupId>io.github.pepperkit</groupId>
                 <artifactId>git-hooks-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>init</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <alwaysOverride>true</alwaysOverride>
-                </configuration>
             </plugin>
         </plugins>
     </build>

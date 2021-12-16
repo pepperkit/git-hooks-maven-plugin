@@ -32,32 +32,7 @@
                 <groupId>io.github.pepperkit</groupId>
                 <artifactId>git-hooks-maven-plugin</artifactId>
 
-                <executions>
-                    <execution>
-                        <id>hooks-init</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>init</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>hooks-validate</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>validate</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>hooks-test</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
                 <configuration>
-                    <alwaysOverride>true</alwaysOverride>
                     <hooks>
                         <pre-commit>echo "pre-commit hook is invoked"</pre-commit>
                         <pre-push>

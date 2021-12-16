@@ -41,8 +41,20 @@ class TestMojoTest {
         final String hookToTest = "pre-commit";
         testMojo.hookName = hookToTest;
 
+        when(gitHooksManagerMock.executeHook(any())).thenReturn(true);
+
         testMojo.execute();
         verify(gitHooksManagerMock, times(1)).executeHook(hookToTest);
+    }
+
+    @Test
+    void throwsExceptionIfSpecifiedHookIsNotInstalled() throws IOException, InterruptedException {
+        testMojo.hookName = "pre-commit";
+
+        when(gitHooksManagerMock.executeHook(any())).thenReturn(false);
+
+        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, testMojo::execute);
+        assertThat(excThrown.getMessage()).contains("is not installed");
     }
 
     @Test
