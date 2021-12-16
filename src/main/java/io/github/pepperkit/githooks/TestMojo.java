@@ -6,13 +6,15 @@
  */
 package io.github.pepperkit.githooks;
 
-import java.io.IOException;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+/**
+ * Executes all or specific hooks installed at the moment, to make sure that the hooks work as expected,
+ * without the need to actually trigger the hook with git action.
+ */
 @Mojo(name = "test")
 public class TestMojo extends AbstractMojo {
 
@@ -26,37 +28,6 @@ public class TestMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        String hookNameIsExecuted = null;
-        int hooksProcessed = 0;
-
-        try {
-            if (hookName == null || hookName.isEmpty()) {
-                getLog().info("hookName is not provided, testing all the hooks");
-                for (String hook : GitHooksManager.GIT_HOOKS) {
-                    hookNameIsExecuted = hook;
-                    boolean executed = gitHooksManager.executeHook(hook);
-                    if (executed) {
-                        hooksProcessed++;
-                    }
-                }
-                if (hooksProcessed == 0) {
-                    getLog().info("No hooks are configured. Make sure you have correctly configured plugin "
-                            + "and ran init goal first to install the hooks.");
-                }
-            } else {
-                hookNameIsExecuted = hookName;
-                boolean processed = gitHooksManager.executeHook(hookName);
-                if (!processed) {
-                    throw new MojoExecutionException("The specified hook `" + hookName + "` is not installed.");
-                }
-            }
-
-        } catch (IOException e) {
-            throw new MojoExecutionException("Cannot execute hook `" + hookNameIsExecuted + "`", e);
-
-        } catch (InterruptedException e) {
-            getLog().error("Cannot execute hook `" + hookNameIsExecuted + "`");
-            Thread.currentThread().interrupt();
-        }
+        GitHooksActionProcessor.processHooks(gitHooksManager::executeHook, hookName, getLog());
     }
 }
