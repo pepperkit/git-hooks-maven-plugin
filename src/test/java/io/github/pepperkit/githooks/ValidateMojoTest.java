@@ -41,8 +41,20 @@ class ValidateMojoTest {
         final String hookToValidate = "pre-commit";
         validateMojo.hookName = hookToValidate;
 
+        when(gitHooksManagerMock.printHook(any())).thenReturn(true);
+
         validateMojo.execute();
         verify(gitHooksManagerMock, times(1)).printHook(hookToValidate);
+    }
+
+    @Test
+    void throwsExceptionIfSpecifiedHookIsNotInstalled() throws IOException {
+        validateMojo.hookName = "pre-commit";
+
+        when(gitHooksManagerMock.printHook(any())).thenReturn(false);
+
+        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, validateMojo::execute);
+        assertThat(excThrown.getMessage()).contains("is not installed");
     }
 
     @Test

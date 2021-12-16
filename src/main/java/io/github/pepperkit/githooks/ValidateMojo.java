@@ -27,16 +27,28 @@ public class ValidateMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         String hookNameIsValidated = null;
+        int hooksProcessed = 0;
+
         try {
             if (hookName == null || hookName.isEmpty()) {
                 getLog().info("hookName is not provided, validating all the hooks");
                 for (String hook : GitHooksManager.GIT_HOOKS) {
                     hookNameIsValidated = hook;
-                    gitHooksManager.printHook(hook);
+                    boolean printed = gitHooksManager.printHook(hook);
+                    if (printed) {
+                        hooksProcessed++;
+                    }
+                }
+                if (hooksProcessed == 0) {
+                    getLog().info("No hooks are configured. Make sure you have correctly configured plugin "
+                            + "and ran init goal first to install the hooks.");
                 }
             } else {
                 hookNameIsValidated = hookName;
-                gitHooksManager.printHook(hookName);
+                boolean processed = gitHooksManager.printHook(hookName);
+                if (!processed) {
+                    throw new MojoExecutionException("The specified hook `" + hookName + "` is not installed.");
+                }
             }
         } catch (IOException e) {
             throw new MojoExecutionException("Cannot read hook file for `" + hookNameIsValidated + "` hook", e);

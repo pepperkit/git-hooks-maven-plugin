@@ -4,7 +4,7 @@
  * This software may be modified and distributed under the terms
  * of the MIT license. See the LICENSE file for details.
  */
-package io.github.pepperkit.githooks;
+package io.github.pepperkit.githooks.steps;
 
 import java.nio.file.Paths;
 
@@ -17,8 +17,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 public class BaseMojoSysTest {
 
-    @Container
-    static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
+    public static org.testcontainers.containers.Container.ExecResult cmdResult;
+
+    public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
             .withFileFromPath(".", Paths.get(".")))
             .withWorkingDirectory("/test-projects")
             .withStartupCheckStrategy(new IsRunningStartupCheckStrategy())

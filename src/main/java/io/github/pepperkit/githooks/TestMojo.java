@@ -27,16 +27,28 @@ public class TestMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         String hookNameIsExecuted = null;
+        int hooksProcessed = 0;
+
         try {
             if (hookName == null || hookName.isEmpty()) {
                 getLog().info("hookName is not provided, testing all the hooks");
                 for (String hook : GitHooksManager.GIT_HOOKS) {
                     hookNameIsExecuted = hook;
-                    gitHooksManager.executeHook(hook);
+                    boolean executed = gitHooksManager.executeHook(hook);
+                    if (executed) {
+                        hooksProcessed++;
+                    }
+                }
+                if (hooksProcessed == 0) {
+                    getLog().info("No hooks are configured. Make sure you have correctly configured plugin "
+                            + "and ran init goal first to install the hooks.");
                 }
             } else {
                 hookNameIsExecuted = hookName;
-                gitHooksManager.executeHook(hookName);
+                boolean processed = gitHooksManager.executeHook(hookName);
+                if (!processed) {
+                    throw new MojoExecutionException("The specified hook `" + hookName + "` is not installed.");
+                }
             }
 
         } catch (IOException e) {

@@ -140,10 +140,11 @@ public class GitHooksManager {
         return GIT_HOOKS_PATH + "/" + hookName;
     }
 
-    void printHook(String hookName) throws IOException {
+    boolean printHook(String hookName) throws IOException {
         Optional<String> hookValue = readHook(hookName);
         hookValue.ifPresent(h -> logger.info(
                 "`" + hookName + "` -> The following commands will be invoked: \n" + h));
+        return hookValue.isPresent();
     }
 
     Optional<String> readHook(String hookName) throws IOException {
@@ -154,7 +155,7 @@ public class GitHooksManager {
         return Optional.of(new String(Files.readAllBytes(hookFilePath)));
     }
 
-    void executeHook(String hookName) throws InterruptedException, IOException {
+    boolean executeHook(String hookName) throws InterruptedException, IOException {
         Optional<String> hook = readHook(hookName);
         if (hook.isPresent()) {
             logger.info(">>>>> Executing hook `" + hookName + "` <<<<<");
@@ -168,5 +169,6 @@ public class GitHooksManager {
             logger.info(">>>>> The hook `" + hookName + "` was executed with the "
                     + (exitCode == 0 ? "SUCCESS" : "ERROR") + " result <<<<<");
         }
+        return hook.isPresent();
     }
 }
