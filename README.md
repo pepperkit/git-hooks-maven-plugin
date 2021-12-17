@@ -40,6 +40,9 @@ The example with *pre-commit* and *pre-push* hooks configured, will look like it
 </plugins>
 ```
 
+Hook's content is any command line script, which is considered successful if exit code is equal to `0`, and not otherwise.
+If execution of the script is successful, git action will be proceeded, if not - it will be cancelled.
+
 Then you can execute one of the following goals manually:
 1. `mvn io.github.pepperkit:git-hooks-maven-plugin:init` - to manually install configured git hooks;
 2. `mvn io.github.pepperkit:git-hooks-maven-plugin:validate` - print all the installed hooks to the console;
