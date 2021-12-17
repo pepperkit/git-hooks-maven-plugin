@@ -321,7 +321,7 @@
             <plugin>
                 <groupId>io.github.pepperkit</groupId>
                 <artifactId>git-hooks-maven-plugin</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.9.0</version>
                 <configuration>
                     <hooks>
                         <pre-commit>mvn -B checkstyle:checkstyle</pre-commit>
