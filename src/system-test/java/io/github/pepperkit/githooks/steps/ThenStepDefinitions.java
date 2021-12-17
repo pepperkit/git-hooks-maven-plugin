@@ -95,16 +95,16 @@ public class ThenStepDefinitions extends BaseMojoSysTest {
     @Then("it executes all the hooks installed at the moment")
     public void executesAllHooksInstalled() {
         assertThat(cmdResult.getStdout())
-                .contains("pre-commit hook is invoked")
-                .contains("pre-push hook is invoked")
+                .contains("pre-commit")
+                .contains("pre-push")
                 .contains("BUILD SUCCESS");
     }
 
     @Then("it executes only this hook")
     public void executesOnlyPrePushHook() {
         assertThat(cmdResult.getStdout())
-                .contains("pre-push hook is invoked")
-                .doesNotContain("pre-commit hook is invoked")
+                .contains("pre-push")
+                .doesNotContain("pre-commit")
                 .contains("BUILD SUCCESS");
     }
 }

@@ -136,7 +136,7 @@ public class GitHooksManager {
 
     private void zipFiles(List<File> srcFiles, String outputFileName) throws IOException {
         if (srcFiles.isEmpty()) {
-            logger.info("No hooks existed, nothing to backup");
+            logger.debug("No hooks existed, nothing to backup");
             return;
         }
 
