@@ -52,8 +52,8 @@ public class InitMojo extends AbstractMojo {
 
         if (gitHooksManager.isFirstLaunchOfPlugin() && !existingHookFiles.isEmpty()) {
             throw new MojoExecutionException("There are existing hooks detected, which were not created using this"
-                    + " plugin. Please, make sure that you transferred them to plugin's configuration and delete them"
-                    + " fist.");
+                    + " plugin. Please, make sure that you transferred them to plugin's configuration "
+                    + "and delete them manually.");
         }
 
         gitHooksManager.checkProvidedHookNamesCorrectness(hooks);

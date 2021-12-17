@@ -33,7 +33,7 @@ The example with *pre-commit* and *pre-push* hooks configured, will look like it
         <configuration>
             <hooks>
                 <pre-commit>mvn -B checkstyle:checkstyle</pre-commit>
-                <pre-push>mvn -B test</pre-push>
+                <pre-push>mvn -B clean compile &amp;&amp; mvn -B test</pre-push>
             </hooks>
         </configuration>
     </plugin>

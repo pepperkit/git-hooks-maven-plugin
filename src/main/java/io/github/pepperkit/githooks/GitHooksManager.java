@@ -58,10 +58,17 @@ public class GitHooksManager {
 
     private final Log logger;
 
+    /**
+     * Creates GitHooksManager with a newly created logger.
+     */
     public GitHooksManager() {
         logger = new SystemStreamLog();
     }
 
+    /**
+     * Creates GitHooksManager with the provided mojo logger.
+     * @param logger mojo logger
+     */
     public GitHooksManager(Log logger) {
         this.logger = logger;
     }
@@ -88,7 +95,7 @@ public class GitHooksManager {
     void checkGitHooksDirAndCreateIfMissing() {
         if (!Files.exists(GIT_PATH)) {
             throw new IllegalStateException("It seems that it's not a git repository. " +
-                    "Maven goal should be executed from the root of the project.");
+                    "Plugin goals should be executed from the root of the project.");
         }
 
         if (!Files.exists(GIT_HOOKS_PATH)) {
@@ -157,7 +164,7 @@ public class GitHooksManager {
         String hookPath = getHookPath(hookName);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(hookPath))) {
-            logger.info("Writing hook `" + hookName + "`");
+            logger.info("Writing `" + hookName + "` hook");
             writer.write(hookValue.replaceAll("[ ]{2,}", ""));
 
             Path hookFilePath = Paths.get(hookPath);
