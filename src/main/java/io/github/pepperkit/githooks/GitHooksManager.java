@@ -42,9 +42,9 @@ public class GitHooksManager {
 
     private static final Path GIT_PATH = Paths.get(".git");
 
-    private static final Path GIT_HOOKS_PATH = Paths.get(".git/hooks");
+    private static final Path GIT_HOOKS_PATH = Paths.get(".git", "hooks");
 
-    private static final String ARCHIVES_PATH_STR = GIT_HOOKS_PATH + "/archived";
+    private static final Path ARCHIVES_PATH = GIT_HOOKS_PATH.resolve("archived");
 
     static final Set<String> GIT_HOOKS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             "applypatch-msg",
@@ -140,7 +140,7 @@ public class GitHooksManager {
      * @return true if it's launched first time, false - otherwise
      */
     boolean isFirstLaunchOfPlugin() {
-        return !Files.exists(Paths.get(ARCHIVES_PATH_STR));
+        return !Files.exists(ARCHIVES_PATH);
     }
 
     /**
@@ -150,8 +150,8 @@ public class GitHooksManager {
      */
     void backupExistingHooks(List<File> hookFiles) {
         try {
-            Files.createDirectories(Paths.get(ARCHIVES_PATH_STR));
-            zipFiles(hookFiles, ARCHIVES_PATH_STR + "/hooks_" + formatter.format(Instant.now()) + ".zip");
+            Files.createDirectories(ARCHIVES_PATH);
+            zipFiles(hookFiles, ARCHIVES_PATH.resolve("hooks_" + formatter.format(Instant.now()) + ".zip").toString());
         } catch (IOException e) {
             throw new IllegalStateException("Cannot create backup for existing hooks", e);
         }
@@ -164,7 +164,7 @@ public class GitHooksManager {
         }
 
         logger.info("Making backup of the existing hooks. "
-                + "They will be available in directory: " + ARCHIVES_PATH_STR);
+                + "They will be available in directory: " + ARCHIVES_PATH);
         try (ZipFile backup = new ZipFile(outputFileName)) {
             backup.addFiles(srcFiles);
         }
