@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -57,6 +59,9 @@ public class GitHooksManager {
             )));
 
     private final Log logger;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+            .withZone(ZoneId.systemDefault());
 
     /**
      * Creates GitHooksManager with a newly created logger.
@@ -135,7 +140,7 @@ public class GitHooksManager {
     void backupExistingHooks(List<File> hookFiles) {
         try {
             Files.createDirectories(Paths.get(ARCHIVES_PATH_STR));
-            zipFiles(hookFiles, ARCHIVES_PATH_STR + "/hooks_" + Instant.now() + ".zip");
+            zipFiles(hookFiles, ARCHIVES_PATH_STR + "/hooks_" + formatter.format(Instant.now()) + ".zip");
         } catch (IOException e) {
             throw new IllegalStateException("Cannot create backup for existing hooks", e);
         }
