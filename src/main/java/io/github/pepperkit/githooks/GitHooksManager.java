@@ -184,9 +184,11 @@ public class GitHooksManager {
             writer.write(hookValue.replaceAll("[ ]{2,}", ""));
 
             Path hookFilePath = Paths.get(hookPath);
-            Set<PosixFilePermission> currentPermissions = Files.getPosixFilePermissions(hookFilePath);
-            if (!currentPermissions.containsAll(HOOK_FILE_PERMISSIONS)) {
-                Files.setPosixFilePermissions(hookFilePath, HOOK_FILE_PERMISSIONS);
+            if (hookFilePath.getFileSystem().supportedFileAttributeViews().contains("posix")) {
+                Set<PosixFilePermission> currentPermissions = Files.getPosixFilePermissions(hookFilePath);
+                if (!currentPermissions.containsAll(HOOK_FILE_PERMISSIONS)) {
+                    Files.setPosixFilePermissions(hookFilePath, HOOK_FILE_PERMISSIONS);
+                }
             }
         }
     }
