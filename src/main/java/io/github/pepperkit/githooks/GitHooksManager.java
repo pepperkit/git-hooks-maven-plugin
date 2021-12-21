@@ -234,8 +234,11 @@ public class GitHooksManager {
             Executors.newSingleThreadExecutor().submit(() -> new BufferedReader(
                     new InputStreamReader(process.getInputStream())).lines().forEach(logger::info));
 
-            int exitCode;
-            exitCode = process.waitFor();
+            int exitCode = process.waitFor();
+            if (exitCode != 0 && !GIT_HOOKS_PATH.getFileSystem().supportedFileAttributeViews().contains("posix")) {
+                logger.error("It seems you use Windows OS, to be able to execute the hooks you " +
+                        "need to do it via Git Bash console");
+            }
             logger.info("Exit code is " + exitCode);
             logger.info(">>>>> The hook `" + hookName + "` was executed with the "
                     + (exitCode == 0 ? "SUCCESS" : "ERROR") + " result <<<<<");
