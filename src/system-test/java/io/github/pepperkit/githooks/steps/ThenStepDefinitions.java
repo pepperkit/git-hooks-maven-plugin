@@ -61,8 +61,11 @@ public class ThenStepDefinitions extends BaseMojoSysTest {
     public void printsAllHooksInstalled() {
         assertThat(cmdResult.getStdout())
                 .contains("`pre-commit` -> The following commands will be invoked: \n"
+                        + "#!/bin/sh\n"
                         + "echo \"pre-commit hook is invoked\"")
-                .contains("`pre-push` -> The following commands will be invoked: \necho \"pre-push hook is invoked\"")
+                .contains("`pre-push` -> The following commands will be invoked: \n"
+                        + "#!/bin/sh\n"
+                        + "echo \"pre-push hook is invoked\"")
                 .contains("BUILD SUCCESS");
     }
 
@@ -78,8 +81,10 @@ public class ThenStepDefinitions extends BaseMojoSysTest {
     public void printsOnlyPreCommitHook() {
         assertThat(cmdResult.getStdout())
                 .contains("`pre-commit` -> The following commands will be invoked: \n"
+                        + "#!/bin/sh\n"
                         + "echo \"pre-commit hook is invoked\"")
                 .doesNotContain("`pre-push` -> The following commands will be invoked: \n"
+                        + "#!/bin/sh\n"
                         + "echo \"pre-push hook is invoked\"")
                 .contains("BUILD SUCCESS");
     }

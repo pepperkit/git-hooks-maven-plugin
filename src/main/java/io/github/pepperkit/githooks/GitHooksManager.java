@@ -46,6 +46,8 @@ public class GitHooksManager {
 
     private static final Path ARCHIVES_PATH = GIT_HOOKS_PATH.resolve("archived");
 
+    private static final String SHEBANG = "#!/bin/sh";
+
     static final Set<String> GIT_HOOKS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             "applypatch-msg",
             "commit-msg",
@@ -181,7 +183,7 @@ public class GitHooksManager {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(hookPath))) {
             logger.info("Writing `" + hookName + "` hook");
-            writer.write(hookValue.replaceAll("[ ]{2,}", ""));
+            writer.write(SHEBANG + "\n" + hookValue.replaceAll("[ ]{2,}", ""));
 
             Path hookFilePath = Paths.get(hookPath);
             if (hookFilePath.getFileSystem().supportedFileAttributeViews().contains("posix")) {
