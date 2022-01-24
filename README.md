@@ -56,5 +56,5 @@ Then you can execute one of the following goals manually:
     ├── main                # code of the plugin
     ├── test                # unit tests
     └── system-test         # system tests
-        └── resources       # ssytem tests scenarios and pre-configured pom files needed for the tests
+        └── resources       # system tests scenarios and pre-configured pom files needed for the tests
 ```
