@@ -31,6 +31,7 @@
             <plugin>
                 <groupId>io.github.pepperkit</groupId>
                 <artifactId>git-hooks-maven-plugin</artifactId>
+                <version>0.9.0-SNAPSHOT</version>
 
                 <configuration>
                     <hooks>
