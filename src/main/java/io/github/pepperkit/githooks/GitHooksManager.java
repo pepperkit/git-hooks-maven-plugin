@@ -19,13 +19,7 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -235,9 +229,10 @@ public class GitHooksManager {
                     new InputStreamReader(process.getInputStream())).lines().forEach(logger::info));
 
             int exitCode = process.waitFor();
-            if (exitCode != 0 && !GIT_HOOKS_PATH.getFileSystem().supportedFileAttributeViews().contains("posix")) {
-                logger.error("It seems you use Windows OS, to be able to execute the hooks you " +
-                        "need to do it via Git Bash console");
+            if (exitCode != 0 && !GIT_HOOKS_PATH.getFileSystem().supportedFileAttributeViews().contains("posix") ||
+                    System.getProperty("os.name").toLowerCase().contains("windows")) {
+                logger.error("It seems you use Windows OS, test " +
+                        "execution of hooks is unavailable on Windows OS.");
             }
             logger.info("Exit code is " + exitCode);
             logger.info(">>>>> The hook `" + hookName + "` was executed with the "
