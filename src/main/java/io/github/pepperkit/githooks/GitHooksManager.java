@@ -219,8 +219,15 @@ public class GitHooksManager {
      * @param hookName hook's name
      * @return true if hook existed, false - otherwise
      * @throws IOException if file cannot be read or executed
+     * @throws IllegalStateException if is launched at Windows OS, since it's not supported for hooks execution
      */
     boolean executeHook(String hookName) throws InterruptedException, IOException {
+        if (!GIT_HOOKS_PATH.getFileSystem().supportedFileAttributeViews().contains("posix") ||
+                System.getProperty("os.name").toLowerCase().contains("windows")) {
+            throw new IllegalStateException("It seems you use Windows OS, test " +
+                    "execution of hooks is unavailable on Windows OS.");
+        }
+
         Optional<String> hook = readHook(hookName);
         if (hook.isPresent()) {
             logger.info(">>>>> Executing hook `" + hookName + "` <<<<<");
@@ -229,11 +236,6 @@ public class GitHooksManager {
                     new InputStreamReader(process.getInputStream())).lines().forEach(logger::info));
 
             int exitCode = process.waitFor();
-            if (exitCode != 0 && !GIT_HOOKS_PATH.getFileSystem().supportedFileAttributeViews().contains("posix") ||
-                    System.getProperty("os.name").toLowerCase().contains("windows")) {
-                logger.error("It seems you use Windows OS, test " +
-                        "execution of hooks is unavailable on Windows OS.");
-            }
             logger.info("Exit code is " + exitCode);
             logger.info(">>>>> The hook `" + hookName + "` was executed with the "
                     + (exitCode == 0 ? "SUCCESS" : "ERROR") + " result <<<<<");
