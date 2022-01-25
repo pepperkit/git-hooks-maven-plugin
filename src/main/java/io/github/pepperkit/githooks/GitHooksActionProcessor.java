@@ -54,6 +54,9 @@ public interface GitHooksActionProcessor {
         } catch (InterruptedException e) {
             logger.error("Cannot execute hook `" + hookNameBeingProcessed + "`");
             Thread.currentThread().interrupt();
+
+        } catch (IllegalStateException e) {
+            throw new MojoExecutionException(e);
         }
     }
 }
