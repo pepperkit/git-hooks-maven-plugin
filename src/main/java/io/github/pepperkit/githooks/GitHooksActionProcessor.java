@@ -56,7 +56,7 @@ public interface GitHooksActionProcessor {
             Thread.currentThread().interrupt();
 
         } catch (IllegalStateException e) {
-            throw new MojoExecutionException(e);
+            throw new MojoExecutionException("IllegalStateException", e);
         }
     }
 }
