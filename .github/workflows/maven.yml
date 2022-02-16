@@ -32,7 +32,7 @@ jobs:
         distribution: 'adopt'
     - name: Checkstyle
       run: mvn -B checkstyle:checkstyle
-    - name: Unit & Integration Tests
+    - name: Unit & System Tests
       run: mvn -B verify
     - name: Analyze with SonarCloud
       run: mvn -B sonar:sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }}
