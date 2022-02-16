@@ -39,7 +39,7 @@ public interface GitHooksActionProcessor {
                 }
                 if (hooksProcessed == 0) {
                     logger.info("No hooks are configured. Make sure you have correctly configured plugin "
-                            + "and ran init goal first to install the hooks.");
+                            + "and ran initHooks goal first to install the hooks.");
                 }
             } else {
                 hookNameBeingProcessed = hookName;

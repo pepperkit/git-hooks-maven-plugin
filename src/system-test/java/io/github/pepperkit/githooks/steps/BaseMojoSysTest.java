@@ -11,7 +11,6 @@ import java.nio.file.Paths;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.startupcheck.IsRunningStartupCheckStrategy;
 import org.testcontainers.images.builder.ImageFromDockerfile;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
@@ -19,12 +18,13 @@ public class BaseMojoSysTest {
 
     public static org.testcontainers.containers.Container.ExecResult cmdResult;
 
-    public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
-            .withFileFromPath(".", Paths.get(".")))
-            .withWorkingDirectory("/test-projects")
-            .withStartupCheckStrategy(new IsRunningStartupCheckStrategy())
-            .withCreateContainerCmdModifier(cmd -> cmd
-                    .withStdinOpen(true)
-                    .withTty(true)
-                    .withCmd("/bin/sh"));
+    public static GenericContainer<?> container = new GenericContainer<>(
+            new ImageFromDockerfile("git-hooks-maven-plugin-test", true)
+                    .withFileFromPath(".", Paths.get(".")))
+                    .withWorkingDirectory("/test-projects")
+                    .withStartupCheckStrategy(new IsRunningStartupCheckStrategy())
+                    .withCreateContainerCmdModifier(cmd -> cmd
+                            .withStdinOpen(true)
+                            .withTty(true)
+                            .withCmd("/bin/sh"));
 }

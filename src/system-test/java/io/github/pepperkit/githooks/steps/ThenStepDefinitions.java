@@ -73,7 +73,7 @@ public class ThenStepDefinitions extends BaseMojoSysTest {
     public void printsNoHooksConfigured() {
         assertThat(cmdResult.getStdout())
                 .contains("No hooks are configured. Make sure you have correctly configured plugin and "
-                        + "ran init goal first to install the hooks.")
+                        + "ran initHooks goal first to install the hooks.")
                 .contains("BUILD SUCCESS");
     }
 

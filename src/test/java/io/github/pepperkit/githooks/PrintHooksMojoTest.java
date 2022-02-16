@@ -17,54 +17,54 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class ValidateMojoTest {
+class PrintHooksMojoTest {
 
     GitHooksManager gitHooksManagerMock;
 
-    ValidateMojo validateMojo;
+    PrintHooksMojo printHooksMojo;
 
     @BeforeEach
     void beforeEach() {
         gitHooksManagerMock = mock(GitHooksManager.class);
-        validateMojo = new ValidateMojo();
-        validateMojo.gitHooksManager = gitHooksManagerMock;
+        printHooksMojo = new PrintHooksMojo();
+        printHooksMojo.gitHooksManager = gitHooksManagerMock;
     }
 
     @Test
     void validatesAllHooksIfHookNameIsNotProvided() throws MojoExecutionException, IOException {
-        validateMojo.execute();
+        printHooksMojo.execute();
         verify(gitHooksManagerMock, times(GitHooksManager.GIT_HOOKS.size())).printHook(any());
     }
 
     @Test
     void validatesOnlySpecifiedHookIfProvided() throws MojoExecutionException, IOException {
         final String hookToValidate = "pre-commit";
-        validateMojo.hookName = hookToValidate;
+        printHooksMojo.hookName = hookToValidate;
 
         when(gitHooksManagerMock.printHook(any())).thenReturn(true);
 
-        validateMojo.execute();
+        printHooksMojo.execute();
         verify(gitHooksManagerMock, times(1)).printHook(hookToValidate);
     }
 
     @Test
     void throwsExceptionIfSpecifiedHookIsNotInstalled() throws IOException {
-        validateMojo.hookName = "pre-commit";
+        printHooksMojo.hookName = "pre-commit";
 
         when(gitHooksManagerMock.printHook(any())).thenReturn(false);
 
-        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, validateMojo::execute);
+        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, printHooksMojo::execute);
         assertThat(excThrown.getMessage()).contains("is not installed");
     }
 
     @Test
     void validateThrowsMojoExecutionExceptionIfReadingOfHookFails() throws MojoExecutionException, IOException {
         final String hookToValidate = "pre-commit";
-        validateMojo.hookName = hookToValidate;
+        printHooksMojo.hookName = hookToValidate;
 
         doThrow(new IOException()).when(gitHooksManagerMock).printHook(any());
 
-        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, validateMojo::execute);
+        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, printHooksMojo::execute);
         assertThat(excThrown.getMessage()).contains(hookToValidate);
     }
 }

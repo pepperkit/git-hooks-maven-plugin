@@ -20,8 +20,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 /**
  * The main Mojo, installs configured git hooks.
  */
-@Mojo(name = "init", defaultPhase = LifecyclePhase.INITIALIZE)
-public class InitMojo extends AbstractMojo {
+@Mojo(name = "initHooks", defaultPhase = LifecyclePhase.INITIALIZE)
+public class InitHooksMojo extends AbstractMojo {
 
     /**
      * Hooks configured by the user.

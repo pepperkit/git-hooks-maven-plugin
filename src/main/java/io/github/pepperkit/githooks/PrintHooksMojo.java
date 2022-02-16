@@ -14,8 +14,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 /**
  * Prints all or specific hooks installed at the moment, to make sure that the plugin was configured correctly.
  */
-@Mojo(name = "validate")
-public class ValidateMojo extends AbstractMojo {
+@Mojo(name = "printHooks")
+public class PrintHooksMojo extends AbstractMojo {
 
     /**
      * The name of the hook to be validated. If not provided, all the hooks will be validated.

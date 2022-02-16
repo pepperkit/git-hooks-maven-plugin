@@ -15,8 +15,8 @@ import org.apache.maven.plugins.annotations.Parameter;
  * Executes all or specific hooks installed at the moment, to make sure that the hooks work as expected,
  * without the need to actually trigger the hook with git action.
  */
-@Mojo(name = "test")
-public class TestMojo extends AbstractMojo {
+@Mojo(name = "executeHooks")
+public class ExecuteHooksMojo extends AbstractMojo {
 
     /**
      * The name of the hook to be tested. If not provided, all the hooks will be tested.

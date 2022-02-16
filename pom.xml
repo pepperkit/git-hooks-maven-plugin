@@ -6,7 +6,7 @@
 
     <groupId>io.github.pepperkit</groupId>
     <artifactId>git-hooks-maven-plugin</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     <name>Git Hooks Maven Plugin</name>
     <description>Maven plugin, which enables control on git hooks via easy configuration.</description>
