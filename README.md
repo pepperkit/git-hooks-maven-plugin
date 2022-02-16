@@ -21,7 +21,7 @@ The example with *pre-commit* and *pre-push* hooks configured, will look like it
     <plugin>
         <groupId>io.github.pepperkit</groupId>
         <artifactId>git-hooks-maven-plugin</artifactId>
-        <version>0.9.0</version>
+        <version>1.0.0</version>
         <executions>
             <!-- It will automatically trigger `init` goal at each initialize project maven phase. -->
             <execution>
