@@ -21,22 +21,22 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class InitMojoTest {
+class InitHooksMojoTest {
 
     GitHooksManager gitHooksManagerMock;
 
-    InitMojo initMojo;
+    InitHooksMojo initHooksMojo;
 
     @BeforeEach
     void beforeEach() {
         gitHooksManagerMock = mock(GitHooksManager.class);
-        initMojo = new InitMojo();
-        initMojo.gitHooksManager = gitHooksManagerMock;
+        initHooksMojo = new InitHooksMojo();
+        initHooksMojo.gitHooksManager = gitHooksManagerMock;
     }
 
     @Test
     void executesNothingIfHooksAreNotProvided() throws MojoExecutionException, IOException {
-        initMojo.execute();
+        initHooksMojo.execute();
         verify(gitHooksManagerMock, times(0)).checkProvidedHookNamesCorrectness(any());
         verify(gitHooksManagerMock, times(0)).checkGitHooksDirAndCreateIfMissing();
         verify(gitHooksManagerMock, times(0)).createHook(any(), any());
@@ -47,9 +47,9 @@ class InitMojoTest {
         Map<String, String> hooks = new HashMap<>();
         hooks.put("pre-commit", "mvn -B checkstyle:checkstyle");
         hooks.put("pre-push", "mvn -B verify");
-        initMojo.hooks = hooks;
+        initHooksMojo.hooks = hooks;
 
-        initMojo.execute();
+        initHooksMojo.execute();
 
         verify(gitHooksManagerMock, times(1)).checkProvidedHookNamesCorrectness(hooks);
         verify(gitHooksManagerMock, times(1)).checkGitHooksDirAndCreateIfMissing();
@@ -64,12 +64,12 @@ class InitMojoTest {
         Map<String, String> hooks = new HashMap<>();
         hooks.put("pre-commit", "mvn -B checkstyle:checkstyle");
         hooks.put("pre-push", "mvn -B verify");
-        initMojo.hooks = hooks;
+        initHooksMojo.hooks = hooks;
 
         doThrow(new IOException()).when(gitHooksManagerMock)
                 .createHook("pre-push", hooks.get("pre-push"));
 
-        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, initMojo::execute);
+        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, initHooksMojo::execute);
         assertThat(excThrown.getMessage()).contains("pre-push");
     }
 
@@ -77,20 +77,20 @@ class InitMojoTest {
     void initThrowsExceptionIfItIsFirstLaunchAndThereAreExistingHooks() throws MojoExecutionException {
         Map<String, String> hooks = new HashMap<>();
         hooks.put("pre-commit", "mvn -B checkstyle:checkstyle");
-        initMojo.hooks = hooks;
+        initHooksMojo.hooks = hooks;
 
         when(gitHooksManagerMock.getExistingHookFiles())
                 .thenReturn(Collections.singletonList(new File("pre-commit")));
         when(gitHooksManagerMock.isFirstLaunchOfPlugin()).thenReturn(true);
 
-        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, initMojo::execute);
+        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, initHooksMojo::execute);
         assertThat(excThrown.getMessage()).containsIgnoringCase("there are existing hooks detected");
     }
 
     @Test
     void setHooksToNullIfNullStringProvidedInConfiguration() {
-        initMojo.setHooks("null");
+        initHooksMojo.setHooks("null");
 
-        assertNull(initMojo.hooks);
+        assertNull(initHooksMojo.hooks);
     }
 }

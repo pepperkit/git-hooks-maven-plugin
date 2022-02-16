@@ -11,46 +11,45 @@ import java.io.IOException;
 import io.cucumber.java.en.When;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WhenStepDefinitions extends BaseMojoSysTest {
 
-    @When("init goal of the plugin is launched with hooks presented in plugin's configuration")
+    @When("initHooks goal of the plugin is launched with hooks presented in plugin's configuration")
     public void initGoalIsLaunchedWithHooks() throws IOException, InterruptedException {
         cmdResult = container.execInContainer("mvn", "-f", "pre_commit_push_hooks-pom.xml",
-                "io.github.pepperkit:git-hooks-maven-plugin:init");
+                "io.github.pepperkit:git-hooks-maven-plugin:initHooks");
     }
 
-    @When("init goal of the plugin is launched with hooks deleted from plugin's configuration")
-    @When("init goal of the plugin is launched with another plugin's configuration")
+    @When("initHooks goal of the plugin is launched with hooks deleted from plugin's configuration")
+    @When("initHooks goal of the plugin is launched with another plugin's configuration")
     public void hooksDeletedFromPom() throws IOException, InterruptedException {
         cmdResult = container.execInContainer("mvn", "-f", "no_hooks-pom.xml",
-                "io.github.pepperkit:git-hooks-maven-plugin:init");
+                "io.github.pepperkit:git-hooks-maven-plugin:initHooks");
         assertThat(cmdResult.getStdout())
                 .contains("BUILD SUCCESS");
     }
 
-    @When("validate goal of plugin is launched without specifying a particular hook")
+    @When("printHooks goal of plugin is launched without specifying a particular hook")
     public void validateGoalLaunchedWithoutSpecificHooks() throws IOException, InterruptedException {
         cmdResult = container.execInContainer("mvn", "-f", "pre_commit_push_hooks-pom.xml",
-                "io.github.pepperkit:git-hooks-maven-plugin:validate");
+                "io.github.pepperkit:git-hooks-maven-plugin:printHooks");
     }
 
-    @When("validate goal of plugin is launched with the specific hook name provided")
+    @When("printHooks goal of plugin is launched with the specific hook name provided")
     public void validateGoalLaunchedWithPreCommitHookSpecified() throws IOException, InterruptedException {
         cmdResult = container.execInContainer("mvn", "-f", "pre_commit_push_hooks-pom.xml",
-                "-DhookName=pre-commit", "io.github.pepperkit:git-hooks-maven-plugin:validate");
+                "-DhookName=pre-commit", "io.github.pepperkit:git-hooks-maven-plugin:printHooks");
     }
 
-    @When("test goal of plugin is launched without specifying a particular hook")
+    @When("executeHooks goal of plugin is launched without specifying a particular hook")
     public void testGoalLaunchedWithoutSpecificHooks() throws IOException, InterruptedException {
         cmdResult = container.execInContainer("mvn", "-f", "pre_commit_push_hooks-pom.xml",
-                "io.github.pepperkit:git-hooks-maven-plugin:test");
+                "io.github.pepperkit:git-hooks-maven-plugin:executeHooks");
     }
 
-    @When("test goal of plugin is launched with the specific hook name provided")
+    @When("executeHooks goal of plugin is launched with the specific hook name provided")
     public void testGoalLaunchedWithPrePushHookSpecified() throws IOException, InterruptedException {
         cmdResult = container.execInContainer("mvn", "-f", "pre_commit_push_hooks-pom.xml",
-                "-DhookName=pre-push", "io.github.pepperkit:git-hooks-maven-plugin:test");
+                "-DhookName=pre-push", "io.github.pepperkit:git-hooks-maven-plugin:executeHooks");
     }
 }

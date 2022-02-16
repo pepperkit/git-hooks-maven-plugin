@@ -21,50 +21,50 @@ class TestMojoTest {
 
     GitHooksManager gitHooksManagerMock;
 
-    TestMojo testMojo;
+    ExecuteHooksMojo executeHooksMojo;
 
     @BeforeEach
     void beforeEach() {
         gitHooksManagerMock = mock(GitHooksManager.class);
-        testMojo = new TestMojo();
-        testMojo.gitHooksManager = gitHooksManagerMock;
+        executeHooksMojo = new ExecuteHooksMojo();
+        executeHooksMojo.gitHooksManager = gitHooksManagerMock;
     }
 
     @Test
     void testsAllHooksIfHookNameIsNotProvided() throws MojoExecutionException, IOException, InterruptedException {
-        testMojo.execute();
+        executeHooksMojo.execute();
         verify(gitHooksManagerMock, times(GitHooksManager.GIT_HOOKS.size())).executeHook(any());
     }
 
     @Test
     void testsOnlySpecifiedHookIfProvided() throws MojoExecutionException, IOException, InterruptedException {
         final String hookToTest = "pre-commit";
-        testMojo.hookName = hookToTest;
+        executeHooksMojo.hookName = hookToTest;
 
         when(gitHooksManagerMock.executeHook(any())).thenReturn(true);
 
-        testMojo.execute();
+        executeHooksMojo.execute();
         verify(gitHooksManagerMock, times(1)).executeHook(hookToTest);
     }
 
     @Test
     void throwsExceptionIfSpecifiedHookIsNotInstalled() throws IOException, InterruptedException {
-        testMojo.hookName = "pre-commit";
+        executeHooksMojo.hookName = "pre-commit";
 
         when(gitHooksManagerMock.executeHook(any())).thenReturn(false);
 
-        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, testMojo::execute);
+        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, executeHooksMojo::execute);
         assertThat(excThrown.getMessage()).contains("is not installed");
     }
 
     @Test
     void testThrowsMojoExecutionExceptionIfIOExceptionIsThrown() throws InterruptedException, IOException {
         final String hookToTest = "pre-commit";
-        testMojo.hookName = hookToTest;
+        executeHooksMojo.hookName = hookToTest;
 
         doThrow(new IOException()).when(gitHooksManagerMock).executeHook(any());
 
-        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, testMojo::execute);
+        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, executeHooksMojo::execute);
         assertThat(excThrown.getMessage()).contains(hookToTest);
     }
 
@@ -72,7 +72,7 @@ class TestMojoTest {
     void testInterruptsIfHookExecIsInterrupted() throws InterruptedException, IOException, MojoExecutionException {
         doThrow(new InterruptedException()).when(gitHooksManagerMock).executeHook(any());
 
-        testMojo.execute();
+        executeHooksMojo.execute();
         assertThat(Thread.interrupted()).isTrue();
     }
 }

@@ -29,11 +29,11 @@ public class GivenStepDefinitions extends BaseMojoSysTest {
         container.execInContainer("git", "init");
     }
 
-    @Given("init goal was launched before with hooks presented in configuration")
-    @Given("init goal was launched before with the specified hook presented in configuration")
+    @Given("initHooks goal was launched before with hooks presented in configuration")
+    @Given("initHooks goal was launched before with the specified hook presented in configuration")
     public void initWithHooksConfigured() throws IOException, InterruptedException {
         cmdResult = container.execInContainer("mvn", "-f", "pre_commit_push_hooks-pom.xml",
-                "io.github.pepperkit:git-hooks-maven-plugin:init");
+                "io.github.pepperkit:git-hooks-maven-plugin:initHooks");
         assertThat(cmdResult.getStdout())
                 .contains("BUILD SUCCESS");
 
@@ -42,11 +42,11 @@ public class GivenStepDefinitions extends BaseMojoSysTest {
                 .contains("pre-commit hook is invoked");
     }
 
-    @Given("init goal was launched before with no hooks presented in configuration")
-    @Given("init goal was launched before with the specified hook not presented in configuration")
+    @Given("initHooks goal was launched before with no hooks presented in configuration")
+    @Given("initHooks goal was launched before with the specified hook not presented in configuration")
     public void initWithNoHooksConfigured() throws IOException, InterruptedException {
         cmdResult = container.execInContainer("mvn", "-f", "no_hooks-pom.xml",
-                "io.github.pepperkit:git-hooks-maven-plugin:init");
+                "io.github.pepperkit:git-hooks-maven-plugin:initHooks");
         assertThat(cmdResult.getStdout())
                 .contains("BUILD SUCCESS");
     }
