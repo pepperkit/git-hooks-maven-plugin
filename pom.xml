@@ -58,7 +58,7 @@
         <!-- Test Dependencies -->
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
         <testcontainers.version>1.17.1</testcontainers.version>
-        <cucumber.version>7.2.3</cucumber.version>
+        <cucumber.version>7.3.4</cucumber.version>
 
         <!-- Plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
