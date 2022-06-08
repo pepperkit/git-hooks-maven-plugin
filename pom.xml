@@ -204,7 +204,7 @@
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>10.2</version>
+                        <version>10.3</version>
                     </dependency>
                 </dependencies>
                 <configuration>
@@ -229,7 +229,7 @@
 
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>3.0.0-M7</version>
                 <configuration>
                     <includes>
                         <include>${itest-name-template}</include>
