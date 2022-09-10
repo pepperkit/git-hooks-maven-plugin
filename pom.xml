@@ -56,9 +56,9 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
         <!-- Test Dependencies -->
-        <junit-jupiter.version>5.8.2</junit-jupiter.version>
+        <junit-jupiter.version>5.9.0</junit-jupiter.version>
         <testcontainers.version>1.17.1</testcontainers.version>
-        <cucumber.version>7.3.4</cucumber.version>
+        <cucumber.version>7.6.0</cucumber.version>
 
         <!-- Plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -110,7 +110,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>4.7.0</version>
+            <version>4.8.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
