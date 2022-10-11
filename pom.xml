@@ -64,7 +64,7 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
-        <checkstyle-plugin.version>3.1.2</checkstyle-plugin.version>
+        <checkstyle-plugin.version>3.2.0</checkstyle-plugin.version>
         <checkstyle.url>https://raw.githubusercontent.com/pepperkit/checkstyle/v1.0.1-9.1/checkstyle.xml
         </checkstyle.url>
         <jacoco-plugin.version>0.8.8</jacoco-plugin.version>
@@ -146,7 +146,7 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite</artifactId>
-            <version>1.8.2</version>
+            <version>1.9.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
