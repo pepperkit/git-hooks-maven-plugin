@@ -68,7 +68,7 @@
         <checkstyle.url>
             https://raw.githubusercontent.com/pepperkit/checkstyle/v1.0.2-9.2/checkstyle.xml
         </checkstyle.url>
-        <jacoco-plugin.version>0.8.8</jacoco-plugin.version>
+        <jacoco-plugin.version>0.8.10</jacoco-plugin.version>
 
         <!-- Excluded since is tested via system tests. -->
         <sonar.exclusions>**GitHooksManager.java</sonar.exclusions>
