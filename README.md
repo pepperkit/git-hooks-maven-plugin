@@ -13,7 +13,7 @@ the project is rebuild. Be aware that for hooks to be installed to git, any `mvn
 like `compile` or `test`. It means that after editing git-hooks-maven-plugin configuration in `pom.xml`,
 it's necessary to manually run `mvn compile` or any other maven goal, on the initializing step of which git hooks will be installed. 
 
-The example with *pre-commit* and *pre-push* hooks configured, will look like it:
+The example with *pre-commit* and *pre-push* hooks configured, will look like this:
 ```xml
 <plugins>
     <plugin>

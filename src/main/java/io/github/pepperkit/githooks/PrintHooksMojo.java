@@ -23,7 +23,7 @@ public class PrintHooksMojo extends AbstractMojo {
     @Parameter(property = "hookName")
     public String hookName;
 
-    GitHooksManager gitHooksManager = new GitHooksManager(getLog());
+    GitHooksManager gitHooksManager = new GitHooksManager(this);
 
     @Override
     public void execute() throws MojoExecutionException {
