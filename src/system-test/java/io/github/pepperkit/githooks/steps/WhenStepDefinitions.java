@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 PepperKit
+ * Copyright (C) 2023 PepperKit
  *
  * This software may be modified and distributed under the terms
  * of the MIT license. See the LICENSE file for details.
@@ -51,5 +51,17 @@ public class WhenStepDefinitions extends BaseMojoSysTest {
     public void testGoalLaunchedWithPrePushHookSpecified() throws IOException, InterruptedException {
         cmdResult = container.execInContainer("mvn", "-f", "pre_commit_push_hooks-pom.xml",
                 "-DhookName=pre-push", "io.github.pepperkit:git-hooks-maven-plugin:executeHooks");
+    }
+
+    @When("initHooks goal of the plugin is launched with the same plugin's configuration")
+    public void initWithHooksConfigured() throws IOException, InterruptedException {
+        cmdResult = container.execInContainer("mvn", "-f", "pre_commit_push_hooks-pom.xml",
+                "io.github.pepperkit:git-hooks-maven-plugin:initHooks");
+        assertThat(cmdResult.getStdout())
+                .contains("BUILD SUCCESS");
+
+        cmdResult = container.execInContainer("cat", ".git/hooks/pre-commit");
+        assertThat(cmdResult.getStdout())
+                .contains("pre-commit hook is invoked");
     }
 }

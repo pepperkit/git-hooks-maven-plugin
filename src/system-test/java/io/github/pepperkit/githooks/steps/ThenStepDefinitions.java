@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 PepperKit
+ * Copyright (C) 2023 PepperKit
  *
  * This software may be modified and distributed under the terms
  * of the MIT license. See the LICENSE file for details.
@@ -55,6 +55,13 @@ public class ThenStepDefinitions extends BaseMojoSysTest {
         cmdResult = container.execInContainer("ls", ".git/hooks/archived");
         assertThat(cmdResult.getStdout().split(" "))
                 .hasSize(1);
+    }
+
+    @Then("previously added hooks are not archived")
+    public void previouslyAddedHooksAreNotArchived() throws IOException, InterruptedException {
+        cmdResult = container.execInContainer("ls", ".git/hooks/archived");
+        assertThat(cmdResult.getStdout().split(" "))
+                .hasSize(0);
     }
 
     @Then("it prints all the hooks installed at the moment")
