@@ -74,20 +74,6 @@ class InitHooksMojoTest {
     }
 
     @Test
-    void initThrowsExceptionIfItIsFirstLaunchAndThereAreExistingHooks() throws MojoExecutionException {
-        Map<String, String> hooks = new HashMap<>();
-        hooks.put("pre-commit", "mvn -B checkstyle:checkstyle");
-        initHooksMojo.hooks = hooks;
-
-        when(gitHooksManagerMock.getExistingHookFiles())
-                .thenReturn(Collections.singletonList(new File("pre-commit")));
-        when(gitHooksManagerMock.isFirstLaunchOfPlugin()).thenReturn(true);
-
-        MojoExecutionException excThrown = assertThrows(MojoExecutionException.class, initHooksMojo::execute);
-        assertThat(excThrown.getMessage()).containsIgnoringCase("there are existing hooks detected");
-    }
-
-    @Test
     void setHooksToNullIfNullStringProvidedInConfiguration() {
         initHooksMojo.setHooks("null");
 

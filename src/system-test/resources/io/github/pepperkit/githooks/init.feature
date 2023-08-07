@@ -19,17 +19,3 @@ Feature: Initialize git hooks via initHooks goal
     And initHooks goal was launched before with hooks presented in configuration
     When initHooks goal of the plugin is launched with hooks deleted from plugin's configuration
     Then previously added hooks are deleted
-
-  Scenario: Archives previously installed hooks
-    Given there's a maven project with git-hooks plugin configured
-    And git repository is set up for the project
-    And initHooks goal was launched before with hooks presented in configuration
-    When initHooks goal of the plugin is launched with another plugin's configuration
-    Then previously added hooks are archived
-
-  Scenario: Archives previously installed hooks
-    Given there's a maven project with git-hooks plugin configured
-    And git repository is set up for the project
-    And initHooks goal was launched before with hooks presented in configuration
-    When initHooks goal of the plugin is launched with the same plugin's configuration
-    Then previously added hooks are not archived

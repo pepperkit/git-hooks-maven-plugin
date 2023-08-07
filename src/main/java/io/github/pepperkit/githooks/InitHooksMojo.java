@@ -8,7 +8,6 @@ package io.github.pepperkit.githooks;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,26 +45,12 @@ public class InitHooksMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         List<File> existingHookFiles = gitHooksManager.getExistingHookFiles();
         if (hooks == null) {
-            gitHooksManager.backupExistingHooks(existingHookFiles);
             existingHookFiles.forEach(File::delete);
             return;
         }
 
-        if (gitHooksManager.isFirstLaunchOfPlugin() && !existingHookFiles.isEmpty()) {
-            throw new MojoExecutionException("There are existing hooks detected, which were not created using this"
-                    + " plugin. Please, make sure that you transferred them to plugin's configuration "
-                    + "and delete them manually.");
-        }
-
         gitHooksManager.checkProvidedHookNamesCorrectness(hooks);
         gitHooksManager.checkGitHooksDirAndCreateIfMissing();
-
-        List<File> hookFiles = gitHooksManager.getExistingHookFiles();
-        List<File> hookFilesNotChanged = new ArrayList<>();
-
-
-
-        gitHooksManager.backupExistingHooks(hookFiles);
 
         String hookToBeCreated = null;
         try {
