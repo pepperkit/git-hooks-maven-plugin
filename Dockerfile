@@ -1,4 +1,4 @@
-FROM arm64v8/alpine:latest
+FROM alpine:latest
 RUN apk update
 RUN apk add git
 RUN apk add maven
