@@ -5,15 +5,13 @@
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=pepperkit_git-hooks-maven-plugin&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=pepperkit_git-hooks-maven-plugin)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pepperkit_git-hooks-maven-plugin&metric=security_rating)](https://sonarcloud.io/dashboard?id=pepperkit_git-hooks-maven-plugin)
 
-Maven plugin for easy git hooks configuration. Provides three goals to work with git hooks:
-1. `initHooks` - installs configured git hooks;
-2. `printHooks` - prints all or specific hooks installed at the moment, to make sure that the plugin was configured correctly;
-3. `executeHooks` - executes all or specific hooks installed at the moment, to make sure that the hooks work as expected, 
-   without the need to actually trigger the hook with git action.
+Maven plugin for easy git hooks configuration.
 
 ## Usage
-Add the plugin into your `pom.xml`, configure the hooks, and optionally set the execution to install the hooks each time
-the project is rebuild.
+Add the plugin into your `pom.xml`, configure the hooks, and set the execution to install the hooks each time
+the project is rebuild. Be aware that for hooks to be installed to git, any `mvn` goal should be first executed, 
+like `compile` or `test`. It means that after editing git-hooks-maven-plugin configuration in `pom.xml`,
+it's necessary to manually run `mvn compile` or any other maven goal, on the initializing step of which git hooks will be installed. 
 
 The example with *pre-commit* and *pre-push* hooks configured, will look like it:
 ```xml
@@ -43,13 +41,6 @@ The example with *pre-commit* and *pre-push* hooks configured, will look like it
 Hook's content is any command line script, which is considered successful if exit code is equal to `0`, and not otherwise.
 If execution of the script is successful, git action will be proceeded, if not - it will be cancelled.
 
-Then you can execute one of the following goals manually:
-1. `mvn io.github.pepperkit:git-hooks-maven-plugin:initHooks` - to manually install configured git hooks;
-2. `mvn io.github.pepperkit:git-hooks-maven-plugin:printHooks` - print all the installed hooks to the console;
-3. `mvn -DhookName=<hookName> io.github.pepperkit:git-hooks-maven-plugin:printHooks` - print only the specified hook;
-4. `mvn io.github.pepperkit:git-hooks-maven-plugin:executeHooks` - execute all the installed hooks;
-5. `mvn -DhookName=<hookName> io.github.pepperkit:git-hooks-maven-plugin:executeHooks` - execute only the specified hook.
-
 ## Project's structure
 ```
 └── src
@@ -58,3 +49,5 @@ Then you can execute one of the following goals manually:
     └── system-test         # system tests
         └── resources       # system tests scenarios and pre-configured pom files needed for the tests
 ```
+
+More about pepperkit projects could be found on its website: https://pepperkit.github.io/ 

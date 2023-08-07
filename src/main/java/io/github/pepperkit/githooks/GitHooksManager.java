@@ -16,14 +16,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import net.lingala.zip4j.ZipFile;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 
@@ -129,41 +133,6 @@ public class GitHooksManager {
                 .filter(h -> Files.exists(Paths.get(h)))
                 .map(File::new)
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Checks if the plugin is launched the first time (`archived` directory is already created).
-     * @return true if it's launched first time, false - otherwise
-     */
-    boolean isFirstLaunchOfPlugin() {
-        return !Files.exists(ARCHIVES_PATH);
-    }
-
-    /**
-     * Backups existing hook files into a zip file.
-     * @param hookFiles hook files to back up
-     * @throws IllegalStateException if an error occurs on writing the backup file
-     */
-    void backupExistingHooks(List<File> hookFiles) {
-        try {
-            Files.createDirectories(ARCHIVES_PATH);
-            zipFiles(hookFiles, ARCHIVES_PATH.resolve("hooks_" + formatter.format(Instant.now()) + ".zip").toString());
-        } catch (IOException e) {
-            throw new IllegalStateException("Cannot create backup for existing hooks", e);
-        }
-    }
-
-    private void zipFiles(List<File> srcFiles, String outputFileName) throws IOException {
-        if (srcFiles.isEmpty()) {
-            logger.debug("No hooks existed, nothing to backup");
-            return;
-        }
-
-        logger.info("Making backup of the existing hooks. "
-                + "They will be available in directory: " + ARCHIVES_PATH);
-        try (ZipFile backup = new ZipFile(outputFileName)) {
-            backup.addFiles(srcFiles);
-        }
     }
 
     /**
