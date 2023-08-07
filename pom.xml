@@ -6,7 +6,7 @@
 
     <groupId>io.github.pepperkit</groupId>
     <artifactId>git-hooks-maven-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>maven-plugin</packaging>
     <name>Git Hooks Maven Plugin</name>
     <description>Maven plugin, which enables control on git hooks via easy configuration.</description>
@@ -321,7 +321,7 @@
             <plugin>
                 <groupId>io.github.pepperkit</groupId>
                 <artifactId>git-hooks-maven-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>1.1.0</version>
                 <configuration>
                     <hooks>
                         <pre-commit>mvn -B checkstyle:checkstyle</pre-commit>
