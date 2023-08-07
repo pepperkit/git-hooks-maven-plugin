@@ -16,8 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,8 +26,7 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.logging.SystemStreamLog;
+import org.apache.maven.plugin.Mojo;
 
 /**
  * Manages all the work with git hooks.
@@ -69,24 +66,14 @@ public class GitHooksManager {
                     PosixFilePermission.OWNER_EXECUTE
             )));
 
-    private final Log logger;
-
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")
-            .withZone(ZoneId.systemDefault());
+    private final Mojo mojo;
 
     /**
-     * Creates GitHooksManager with a newly created logger.
+     * Creates GitHooksManager with the provided mojo. Mojo is used to obtain the correct logger.
+     * @param mojo mojo, which initiated the work with GitHooksManager
      */
-    public GitHooksManager() {
-        logger = new SystemStreamLog();
-    }
-
-    /**
-     * Creates GitHooksManager with the provided mojo logger.
-     * @param logger mojo logger
-     */
-    public GitHooksManager(Log logger) {
-        this.logger = logger;
+    public GitHooksManager(Mojo mojo) {
+        this.mojo = mojo;
     }
 
     /**
@@ -143,16 +130,23 @@ public class GitHooksManager {
      */
     void createHook(String hookName, String hookValue) throws IOException {
         String hookPath = getHookPath(hookName);
+        String fullHookValue = SHEBANG + "\n" + hookValue.replaceAll("[ ]{2,}", "");
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(hookPath))) {
-            logger.info("Writing `" + hookName + "` hook");
-            writer.write(SHEBANG + "\n" + hookValue.replaceAll("[ ]{2,}", ""));
+        Optional<String> existingHookValue = readHook(hookName);
+        if (existingHookValue.isPresent() && existingHookValue.get().equals(fullHookValue)) {
+            mojo.getLog().info("The hook `" + hookName + "` has not changed, skipping");
 
-            Path hookFilePath = Paths.get(hookPath);
-            if (hookFilePath.getFileSystem().supportedFileAttributeViews().contains("posix")) {
-                Set<PosixFilePermission> currentPermissions = Files.getPosixFilePermissions(hookFilePath);
-                if (!currentPermissions.containsAll(HOOK_FILE_PERMISSIONS)) {
-                    Files.setPosixFilePermissions(hookFilePath, HOOK_FILE_PERMISSIONS);
+        } else {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(hookPath))) {
+                mojo.getLog().info("Writing `" + hookName + "` hook");
+                writer.write(fullHookValue);
+
+                Path hookFilePath = Paths.get(hookPath);
+                if (hookFilePath.getFileSystem().supportedFileAttributeViews().contains("posix")) {
+                    Set<PosixFilePermission> currentPermissions = Files.getPosixFilePermissions(hookFilePath);
+                    if (!currentPermissions.containsAll(HOOK_FILE_PERMISSIONS)) {
+                        Files.setPosixFilePermissions(hookFilePath, HOOK_FILE_PERMISSIONS);
+                    }
                 }
             }
         }
@@ -170,7 +164,7 @@ public class GitHooksManager {
      */
     boolean printHook(String hookName) throws IOException {
         Optional<String> hookValue = readHook(hookName);
-        hookValue.ifPresent(h -> logger.info(
+        hookValue.ifPresent(h -> mojo.getLog().info(
                 "`" + hookName + "` -> The following commands will be invoked: \n" + h));
         return hookValue.isPresent();
     }
@@ -199,14 +193,14 @@ public class GitHooksManager {
 
         Optional<String> hook = readHook(hookName);
         if (hook.isPresent()) {
-            logger.info(">>>>> Executing hook `" + hookName + "` <<<<<");
+            mojo.getLog().info(">>>>> Executing hook `" + hookName + "` <<<<<");
             Process process = Runtime.getRuntime().exec("sh -c " + getHookPath(hookName));
             Executors.newSingleThreadExecutor().submit(() -> new BufferedReader(
-                    new InputStreamReader(process.getInputStream())).lines().forEach(logger::info));
+                    new InputStreamReader(process.getInputStream())).lines().forEach(mojo.getLog()::info));
 
             int exitCode = process.waitFor();
-            logger.info("Exit code is " + exitCode);
-            logger.info(">>>>> The hook `" + hookName + "` was executed with the "
+            mojo.getLog().info("Exit code is " + exitCode);
+            mojo.getLog().info(">>>>> The hook `" + hookName + "` was executed with the "
                     + (exitCode == 0 ? "SUCCESS" : "ERROR") + " result <<<<<");
         }
         return hook.isPresent();

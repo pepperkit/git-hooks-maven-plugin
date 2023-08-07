@@ -322,9 +322,17 @@
                 <groupId>io.github.pepperkit</groupId>
                 <artifactId>git-hooks-maven-plugin</artifactId>
                 <version>1.1.0</version>
+                <executions>
+                    <!-- It will automatically trigger `init` goal at each initialize project maven phase. -->
+                    <execution>
+                        <goals>
+                            <goal>initHooks</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <hooks>
-                        <pre-commit>mvn -B checkstyle:checkstyle</pre-commit>
+                        <pre-commit>mvn checkstyle:checkstyle</pre-commit>
                         <pre-push>mvn -B test</pre-push>
                     </hooks>
                 </configuration>

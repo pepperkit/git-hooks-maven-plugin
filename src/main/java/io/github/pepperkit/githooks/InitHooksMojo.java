@@ -29,7 +29,7 @@ public class InitHooksMojo extends AbstractMojo {
     @Parameter(defaultValue = "null")
     public Map<String, String> hooks;
 
-    GitHooksManager gitHooksManager = new GitHooksManager(getLog());
+    GitHooksManager gitHooksManager = new GitHooksManager(this);
 
     /**
      * Helper method, is used to set hooks to null if nothing is provided by the user.
