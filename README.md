@@ -19,7 +19,7 @@ The example with *pre-commit* and *pre-push* hooks configured, will look like th
     <plugin>
         <groupId>io.github.pepperkit</groupId>
         <artifactId>git-hooks-maven-plugin</artifactId>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
         <executions>
             <!-- It will automatically trigger `init` goal at each initialize project maven phase. -->
             <execution>
@@ -31,7 +31,7 @@ The example with *pre-commit* and *pre-push* hooks configured, will look like th
         <configuration>
             <hooks>
                 <pre-commit>mvn -B checkstyle:checkstyle</pre-commit>
-                <pre-push>mvn -B clean compile && mvn -B test</pre-push>
+                <pre-push>mvn -B test</pre-push>
             </hooks>
         </configuration>
     </plugin>
